@@ -227,23 +227,6 @@ h2 {
   background: var(--accent);
 }
 .cost h3 { font-size: 1.05rem; margin: .2rem 0 .8rem; }
-.cost-role {
-  display: grid; grid-template-columns: auto auto auto; justify-content: space-between; gap: .5rem 1rem; align-items: center;
-  padding: .55rem 0; border-top: 1px solid var(--line);
-}
-.cost-name { font-weight: 700; color: var(--ink); font-size: .92rem; white-space: nowrap; }
-.cost-name em { font-style: normal; font-weight: 600; color: var(--muted); }
-.cost-role label { display: flex; align-items: center; gap: .4rem; font-size: .76rem; color: var(--muted); white-space: nowrap; }
-.cost-role input {
-  width: 5.6rem; min-height: 36px; padding: .3rem .5rem;
-  border: 1px solid var(--line); border-radius: .45rem;
-  font: inherit; font-size: .9rem; font-weight: 700; text-align: right;
-  font-variant-numeric: tabular-nums; color: var(--ink); background: var(--bg);
-}
-.cost-role input[data-cost="share"] { width: 3.6rem; }
-.cost-role input:focus-visible { outline: 2px solid var(--brand); outline-offset: 1px; background: #fff; }
-.cost-role label span { font-weight: 700; color: var(--muted); }
-.cost-hint { margin: .3rem 0 .4rem; font-size: .76rem; color: var(--muted); }
 .cost-in { display: grid; align-content: center; }
 .cost-people { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
 .cost-people li {
@@ -255,7 +238,8 @@ h2 {
   width: .5rem; height: .5rem; border-radius: 2px; background: var(--accent);
 }
 .cost-people em { font-style: normal; font-weight: 600; color: var(--muted); }
-.cost-note .cost-role { max-width: 34rem; }
+.cost-people li { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-left: 1.2rem; }
+.cost-people b { font-weight: 600; font-size: .85rem; color: var(--muted); white-space: nowrap; }
 .cost-out {
   display: grid; align-content: center; justify-items: center; gap: .35rem; text-align: center;
   padding: 1.1rem 1rem; border-radius: .75rem;
@@ -269,9 +253,6 @@ h2 {
 }
 .cost-sub { font-size: .82rem; }
 .cost-sub strong { color: #fff; font-variant-numeric: tabular-nums; }
-.cost-note { margin: .6rem 0 0; font-size: .8rem; color: var(--muted); }
-.cost-note summary { cursor: pointer; font-weight: 600; color: var(--ink); padding: .3rem 0; }
-.cost-note ul { margin: .3rem 0 0; padding-left: 1.1rem; }
 
 
 /* ================= 3 řešení: diagram ================= */
@@ -877,9 +858,6 @@ h2 {
 }
 
 @media screen and (max-width: 720px) {
-  .cost-role { grid-template-columns: minmax(0, 1fr); gap: .4rem; }
-  .cost-role label { justify-content: space-between; }
-  .cost-role label input { margin-left: auto; }
 
   .node { font-size: .76rem; }
 
@@ -953,7 +931,6 @@ h2 {
   .hero-title mark { background-size: 100% .3em; }
   .portrait { box-shadow: none; }
 
-  .cost-note .cost-hint, .cost-note .cost-role { display: none; }
   .demo, .demo-open { display: none !important; }
   .pain, .cost-box, .step, .need, .cl-row, .plan, .ref, .about, .flow-wrap { break-inside: avoid; }
   .logo-card, .tool-ico, .pain-ico { box-shadow: none; }

@@ -25,25 +25,18 @@ const CONTENT = {
   ],
   calc: {
     title: 'Kolik vás dnes nábor stojí',
-    hint: 'Hodnoty si přepište podle své firmy, výsledek se přepočítá.',
-    salaryLabel: 'hrubá mzda',
-    shareLabel: 'čas na nábor',
     outLabel: 'Ročně vás to stojí',
+    year: '473\u00a0652\u00a0Kč',
+    days: '100',
     daysText: 'člověkodnů ročně, které nešly do práce vedení',
+    month: '39\u00a0471\u00a0Kč',
     monthText: 'měsíčně',
-    // odvody zaměstnavatele 24,8 % sociální + 9 % zdravotní (sazby 2026)
-    levy: 1.338,
-    workdays: 250,
     roles: [
-      { name: 'CEO', count: 1, salary: 100000, share: 10 },
-      { name: 'Vedoucí', count: 2, salary: 65000, share: 15 },
-    ],
-    noteTitle: 'Výpočet',
-    notes: [
-      'K hrubé mzdě připočítávám odvody zaměstnavatele 33,8 % (24,8 % sociální + 9 % zdravotní pojištění, sazby pro rok 2026).',
-      'Člověkodny počítám z 250 pracovních dnů v roce.',
+      { name: 'CEO', count: 1, time: '5–10 % času' },
+      { name: 'Vedoucí', count: 2, time: '15–20 % času' },
     ],
   },
+
 },
 
   solution: {
@@ -469,37 +462,20 @@ function problem(c, n) {
 }
 
 function costCalc(k) {
-  const summary = k.roles.map(r => `<li>${esc(r.name)}${r.count > 1 ? ` <em>${r.count}×</em>` : ''}</li>`).join('');
-  const params = k.roles.map((r, i) => `
-    <div class="cost-role">
-      <span class="cost-name">${esc(r.name)}${r.count > 1 ? ` <em>${r.count}×</em>` : ''}</span>
-      <label>${esc(k.salaryLabel)}
-        <input type="number" data-cost="salary" data-role="${i}" value="${r.salary}" min="0" step="1000" inputmode="numeric">
-        <span>Kč</span></label>
-      <label>${esc(k.shareLabel)}
-        <input type="number" data-cost="share" data-role="${i}" value="${r.share}" min="0" max="100" step="1" inputmode="numeric">
-        <span>%</span></label>
-    </div>`).join('');
+  const people = k.roles.map(r => `
+    <li><span>${esc(r.name)}${r.count > 1 ? ` <em>${r.count}×</em>` : ''}</span><b>${esc(r.time)}</b></li>`).join('');
   return `
-    <div class="cost-box">
-      <div class="cost" data-reveal>
-        <div class="cost-in">
-          <h3>${esc(k.title)}</h3>
-          <ul class="cost-people">${summary}</ul>
-        </div>
-        <div class="cost-out">
-          <p class="cost-label">${esc(k.outLabel)}</p>
-          <p class="cost-money" data-cost-out="year">0 Kč</p>
-          <p class="cost-sub"><strong data-cost-out="days">0</strong> ${esc(k.daysText)}</p>
-          <p class="cost-sub"><strong data-cost-out="month">0 Kč</strong> ${esc(k.monthText)}</p>
-        </div>
+    <div class="cost" data-reveal>
+      <div class="cost-in">
+        <h3>${esc(k.title)}</h3>
+        <ul class="cost-people">${people}</ul>
       </div>
-      <details class="cost-note">
-        <summary>${esc(k.noteTitle)}</summary>
-        <p class="cost-hint">${esc(k.hint)}</p>
-        ${params}
-        <ul>${k.notes.map(t => `<li>${rich(t)}</li>`).join('')}</ul>
-      </details>
+      <div class="cost-out">
+        <p class="cost-label">${esc(k.outLabel)}</p>
+        <p class="cost-money">${esc(k.year)}</p>
+        <p class="cost-sub"><strong>${esc(k.days)}</strong> ${esc(k.daysText)}</p>
+        <p class="cost-sub"><strong>${esc(k.month)}</strong> ${esc(k.monthText)}</p>
+      </div>
     </div>`;
 }
 
@@ -947,30 +923,6 @@ function initCandidates() {
   });
 }
 
-function initCost() {
-  const box = document.querySelector('.cost-box');
-  const k = CONTENT.problem.calc;
-  if (!box || !k) return;
-  const cur = { currency: 'Kč' };
-  const val = (kind, i, fallback) => {
-    const v = parseFloat(box.querySelector(`[data-cost="${kind}"][data-role="${i}"]`).value);
-    return isFinite(v) && v >= 0 ? v : fallback;
-  };
-  const update = () => {
-    let year = 0, share = 0;
-    k.roles.forEach((r, i) => {
-      const s = val('share', i, r.share) / 100;
-      year += r.count * val('salary', i, r.salary) * k.levy * s * 12;
-      share += r.count * s;
-    });
-    countTo(box.querySelector('[data-cost-out="year"]'), Math.round(year), cur);
-    countTo(box.querySelector('[data-cost-out="month"]'), Math.round(year / 12), cur);
-    box.querySelector('[data-cost-out="days"]').textContent = Math.round(share * k.workdays).toLocaleString('cs-CZ');
-  };
-  box.addEventListener('input', update);
-  update();
-}
-
 function initPrice() {
   const box = document.getElementById('cena');
   if (!box) return;
@@ -1014,6 +966,5 @@ addEventListener('beforeprint', () => document.querySelectorAll('details').forEa
 initFlow();
 initDemo();
 initCandidates();
-initCost();
 initPrice();
 requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add('is-loaded')));
